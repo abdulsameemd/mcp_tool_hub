@@ -1,0 +1,80 @@
+graph TD
+    subgraph CLIENTS["CLIENT LAYER -- Your Machine"]
+        direction LR
+        CLI["Terminal\nClaude Code CLI\nclaude mcp add"]
+        VSCODE["VS Code\nClaude Code Extension\nInline diffs + file context"]
+        DESKTOP["Claude Desktop\nclaude_desktop_config.json\nConversational AI"]
+    end
+
+    subgraph MCP_SERVER["ABAP MCP SERVER -- Node.js + TypeScript"]
+        direction TB
+        START["start.js\nEntry Point"]
+        ADT_CLIENT["adtClient.ts\nADT REST Client"]
+        ENV[".env Config\nSAP_URL / USER / PASSWORD\nMOCK_MODE"]
+
+        subgraph TOOLS["12 MCP TOOLS"]
+            direction LR
+            subgraph SEARCH_READ["Search and Read"]
+                T1["searchObject"]
+                T2["getObjectSource"]
+                T3["getObjectMetadata"]
+            end
+            subgraph CODEGEN["Code Generation"]
+                T4["generateAbapCode"]
+                T5["writeObjectSource"]
+            end
+            subgraph REVIEW["Code Review"]
+                T6["reviewAbapCode"]
+                T7["syntaxCheck"]
+                T8["runAtcCheck"]
+            end
+            subgraph TRANSPORT["Transport Mgmt"]
+                T9["listTransports"]
+                T10["getTransportDetails"]
+                T11["validateTransport"]
+            end
+            subgraph SPECS["Spec and CDS"]
+                T12["generateWricefSpec"]
+                T13["generateCdsView"]
+                T14["reviewCdsView"]
+            end
+        end
+
+        START --> ADT_CLIENT
+        ADT_CLIENT --> TOOLS
+        ENV -.-> ADT_CLIENT
+    end
+
+    subgraph SAP["SAP S4HANA -- Your SAP System"]
+        direction TB
+        ADT_API["ADT REST API\n/sap/bc/adt\nActivated in SICF"]
+        ABAP_OBJ["ABAP Objects\nClasses / Reports\nFMs / Interfaces"]
+        CTS["Transport System\nCTS / TMS\nRead and Validate"]
+        ATC["ATC Engine\nVariant Z_ABAP_ATC\nCode Quality Checks"]
+        ADT_API --> ABAP_OBJ
+        ADT_API --> CTS
+        ADT_API --> ATC
+    end
+
+    subgraph STANDARDS["DEWA STANDARDS -- Auto-loaded via CLAUDE.md"]
+        direction LR
+        NAMING["DEWA Naming\nZCL_ ZFI_ ZDFI"]
+        WRICEF["WRICEF Format\n9-Section Spec"]
+        CLEAN["Clean Core\nLevel A-D Framework\nBTP-first"]
+    end
+
+    CLIENTS <-->|"stdio JSON-RPC\nRequest and Response"| MCP_SERVER
+    MCP_SERVER <-->|"HTTPS Port 44300\nADT REST API\nRequest and Response"| SAP
+    STANDARDS -.->|"Applied to\nevery output"| MCP_SERVER
+
+    classDef clientBox fill:#1e3a5f,stroke:#5cbdb9,color:#fff
+    classDef mcpBox fill:#0d7a5f,stroke:#c9a84c,color:#fff
+    classDef sapBox fill:#065A82,stroke:#5cbdb9,color:#fff
+    classDef toolBox fill:#2d5a3d,stroke:#97BC62,color:#fff
+    classDef stdBox fill:#6D2E46,stroke:#ECE2D0,color:#fff
+
+    class CLI,VSCODE,DESKTOP clientBox
+    class START,ADT_CLIENT,ENV mcpBox
+    class ADT_API,ABAP_OBJ,CTS,ATC sapBox
+    class T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14 toolBox
+    class NAMING,WRICEF,CLEAN stdBox
