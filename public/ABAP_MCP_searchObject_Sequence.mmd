@@ -1,0 +1,31 @@
+sequenceDiagram
+    actor User
+    participant Claude as Claude AI
+    participant MCP as ABAP MCP Server<br/>(Node.js/TypeScript)
+    participant ADT as ADT REST Client<br/>(adtClient.ts)
+    participant SAP as SAP S/4HANA<br/>(Port 44300)
+
+    User->>Claude: "Search for class ZCL_SALES_ORDER"
+    
+    Note over Claude: Parses intent and maps<br/>to searchObject tool
+
+    Claude->>MCP: stdio JSON-RPC Request<br/>method: tools/call<br/>name: searchObject<br/>params: {query: "ZCL_SALES_ORDER",<br/>type: "CLAS", maxResults: 10}
+
+    Note over MCP: Validates input params<br/>against tool schema
+
+    MCP->>ADT: buildSearchUrl(query, type)
+    ADT->>SAP: GET /sap/bc/adt/repository/informationsystem/search<br/>?operation=quickSearch<br/>&query=ZCL_SALES_ORDER*<br/>&objectType=CLAS<br/>&maxResults=10<br/>Headers: Authorization, x-csrf-token
+
+    Note over SAP: ADT searches repository<br/>for matching objects
+
+    SAP-->>ADT: HTTP 200 OK<br/>Content-Type: application/xml<br/><objectReferences><br/>  <objectReference name="ZCL_SALES_ORDER"<br/>    type="CLAS/OC"<br/>    uri="/sap/bc/adt/oo/classes/zcl_sales_order"<br/>    packageName="ZSALES" /><br/></objectReferences>
+
+    ADT-->>MCP: Parsed JSON response<br/>[{name, type, uri, package}]
+
+    Note over MCP: Formats results as<br/>structured content
+
+    MCP-->>Claude: stdio JSON-RPC Response<br/>{content: [{type: "text",<br/>text: "Found 1 result:<br/>ZCL_SALES_ORDER (CLAS)<br/>Package: ZSALES"}]}
+
+    Note over Claude: Interprets results and<br/>formulates natural language
+
+    Claude-->>User: "I found the class ZCL_SALES_ORDER<br/>in package ZSALES. Would you like me<br/>to read its source code?"
