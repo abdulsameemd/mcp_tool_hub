@@ -77,41 +77,22 @@
     <!-- ── Presentation Banner ── -->
     <section class="ppt-banner">
       <div class="ppt-inner">
-        <div class="ppt-left">
-          <div class="ppt-eyebrow">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            Presentation
-          </div>
-          <h2 class="ppt-title">SAP Development AI — DEWA</h2>
-          <p class="ppt-desc">A phased roadmap for AI-assisted SAP development using Model Context Protocol — covering UI5/Fiori MCP, ABAP Custom MCP, and BTP Integration Suite.</p>
+        <div class="ppt-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="ppt-body">
+          <div class="ppt-label">10-slide presentation</div>
+          <div class="ppt-title">SAP Development AI — DEWA</div>
           <div class="ppt-phases">
-            <div class="ppt-phase ppt-phase--blue">
-              <span class="ppt-phase-label">Phase 1</span>
-              <span class="ppt-phase-name">UI5 / Fiori MCP</span>
-            </div>
-            <div class="ppt-phase ppt-phase--green">
-              <span class="ppt-phase-label">Phase 2</span>
-              <span class="ppt-phase-name">ABAP Custom MCP</span>
-            </div>
-            <div class="ppt-phase ppt-phase--amber">
-              <span class="ppt-phase-label">Phase 3</span>
-              <span class="ppt-phase-name">BTP Integration Suite</span>
-            </div>
+            <span class="ppt-phase ppt-phase--blue">Phase 1 · UI5 / Fiori MCP</span>
+            <span class="ppt-phase ppt-phase--green">Phase 2 · ABAP Custom MCP</span>
+            <span class="ppt-phase ppt-phase--amber">Phase 3 · BTP Integration Suite</span>
           </div>
         </div>
-        <div class="ppt-right">
-          <div class="ppt-slide-preview">
-            <div class="ppt-slide-mock">
-              <div class="ppt-mock-bar"></div>
-              <div class="ppt-mock-title">SAP UI5/Fiori Development</div>
-              <div class="ppt-mock-sub">UI5 / Fiori MCP · AI Assisted Frontend Development</div>
-              <div class="ppt-mock-dots">
-                <span></span><span></span><span></span>
-              </div>
-            </div>
-            <div class="ppt-slide-count">10 slides</div>
-          </div>
-        </div>
+        <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Open Presentation
+        </a>
       </div>
     </section>
 
@@ -427,113 +408,54 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 .corner-credit { text-align: right; margin-top: 20px; font-size: 11px; font-family: var(--font-mono); color: var(--t-faint); letter-spacing: .03em; }
 
 /* ── Presentation Banner ── */
-.ppt-banner { padding: 0 24px 48px; }
+.ppt-banner { padding: 0 24px 40px; }
 .ppt-inner {
   max-width: 1080px;
   margin: 0 auto;
   background: linear-gradient(135deg, #0f2d1a 0%, #0f4024 60%, #1a5c38 100%);
-  border-radius: 16px;
-  padding: 36px 40px;
+  border-radius: 14px;
+  padding: 20px 28px;
   display: flex;
   align-items: center;
-  gap: 48px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
-.ppt-left { flex: 1; min-width: 0; position: relative; z-index: 1; }
-.ppt-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+.ppt-icon {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,.1);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
   color: #86efac;
-  margin-bottom: 12px;
+  flex-shrink: 0;
 }
-.ppt-title {
-  font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 12px;
-  line-height: 1.2;
-}
-.ppt-desc {
-  font-size: 13.5px;
-  color: rgba(255,255,255,.7);
-  line-height: 1.65;
-  margin: 0 0 24px;
-  max-width: 480px;
-}
-.ppt-phases { display: flex; gap: 10px; flex-wrap: wrap; }
+.ppt-body { flex: 1; min-width: 200px; }
+.ppt-label { font-family: var(--font-mono); font-size: 10px; color: #86efac; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 4px; }
+.ppt-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+.ppt-phases { display: flex; gap: 8px; flex-wrap: wrap; }
 .ppt-phase {
-  display: flex;
-  flex-direction: column;
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,.15);
-  background: rgba(255,255,255,.07);
-  backdrop-filter: blur(4px);
-}
-.ppt-phase-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px; }
-.ppt-phase-name { font-family: var(--font-display); font-size: 12px; font-weight: 600; color: #fff; }
-.ppt-phase--blue .ppt-phase-label { color: #93c5fd; }
-.ppt-phase--green .ppt-phase-label { color: #86efac; }
-.ppt-phase--amber .ppt-phase-label { color: #fcd34d; }
-
-.ppt-right { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 16px; position: relative; z-index: 1; }
-.ppt-slide-preview { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.ppt-slide-mock {
-  width: 220px;
-  height: 138px;
-  background: #1e3a5f;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,.15);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.3);
-}
-.ppt-mock-bar {
-  width: 40px; height: 4px;
-  background: #0d7a5f;
-  border-radius: 2px;
-}
-.ppt-mock-title {
-  font-family: var(--font-display);
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.3;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.2);
 }
-.ppt-mock-sub {
-  font-size: 9px;
-  color: rgba(255,255,255,.5);
-  line-height: 1.4;
-}
-.ppt-mock-dots { display: flex; gap: 5px; margin-top: auto; }
-.ppt-mock-dots span { width: 24px; height: 3px; background: rgba(255,255,255,.2); border-radius: 2px; }
-.ppt-mock-dots span:first-child { background: #0d7a5f; }
-.ppt-slide-count { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,.45); }
-
-.ppt-actions { display: flex; gap: 10px; }
+.ppt-phase--blue  { color: #93c5fd; }
+.ppt-phase--green { color: #86efac; }
+.ppt-phase--amber { color: #fcd34d; }
 .ppt-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 18px;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 20px;
   border-radius: 8px;
+  background: #fff;
+  color: #0f4024;
   font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
-  transition: all .15s;
   white-space: nowrap;
+  flex-shrink: 0;
+  transition: background .15s;
 }
-.ppt-btn--primary { background: #fff; color: #0f4024; }
-.ppt-btn--primary:hover { background: #f0fdf4; }
-.ppt-btn--ghost { background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.2); }
-.ppt-btn--ghost:hover { background: rgba(255,255,255,.18); }
+.ppt-btn:hover { background: #f0fdf4; }
 </style>
