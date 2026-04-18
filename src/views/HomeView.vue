@@ -418,13 +418,15 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 
 /* ── Presentation Banner ── */
 .ppt-section {
-  background: linear-gradient(135deg, #0f2d1a 0%, #0f4024 60%, #1a5c38 100%);
-  overflow: hidden;
+  padding: 0 32px 40px;
 }
 .ppt-inner {
   max-width: 1140px;
   margin: 0 auto;
-  padding: 18px 32px;
+  padding: 18px 28px;
+  background: linear-gradient(135deg, #0f2d1a 0%, #0f4024 60%, #1a5c38 100%);
+  border-radius: 14px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   gap: 20px;
