@@ -1,6 +1,9 @@
 <template>
   <div class="layout">
 
+    <!-- Mobile backdrop -->
+    <div class="sidebar-backdrop" v-if="!sidebarCollapsed" @click="sidebarCollapsed = true"></div>
+
     <!-- ── Sidebar ── -->
     <aside class="sidebar" :class="{ collapsed: sidebarCollapsed }">
 
@@ -149,6 +152,9 @@
       <!-- Top nav bar -->
       <header class="topnav">
         <div class="topnav-left">
+          <button class="mobile-menu-btn" @click="sidebarCollapsed = !sidebarCollapsed" title="Menu">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
           <RouterLink to="/" class="home-link" title="Back to Hub">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </RouterLink>
@@ -338,6 +344,9 @@ watch(server, (newServer) => {
 })
 
 onMounted(() => {
+  // Auto-collapse sidebar on mobile
+  if (window.innerWidth < 768) sidebarCollapsed.value = true
+
   const cat = route.query.cat
   if (cat && serverCats.value[cat]) {
     currentCat.value = cat
@@ -375,17 +384,23 @@ const searchResults = computed(() => {
   return results
 })
 
+function closeSidebarOnMobile() {
+  if (window.innerWidth < 768) sidebarCollapsed.value = true
+}
+
 function selectCat(key) {
   currentCat.value = key
   currentTool.value = serverCats.value[key].tools[0]
   askPanelOpen.value = false
   searchQuery.value = ''
+  closeSidebarOnMobile()
   scrollTop()
 }
 
 function selectTool(key) {
   currentTool.value = key
   askPanelOpen.value = false
+  closeSidebarOnMobile()
   scrollTop()
 }
 
@@ -394,6 +409,7 @@ function selectFromSearch(result) {
   currentTool.value = result.key
   searchQuery.value = ''
   askPanelOpen.value = false
+  closeSidebarOnMobile()
   scrollTop()
 }
 
@@ -725,4 +741,91 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 .chat-input-footer { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--t-faint); }
 .chat-key-reset { background: none; border: none; cursor: pointer; font-size: 11px; color: var(--t-muted); text-decoration: underline; padding: 0; }
 .chat-key-reset:hover { color: var(--t-primary); }
+
+/* ── Mobile menu button (hidden on desktop) ── */
+.mobile-menu-btn { display: none; }
+
+/* ── Responsive: Tablet ≤ 1024px ── */
+@media (max-width: 1024px) {
+  .topnav-tabs { display: none; }
+  .tool-counter { display: none; }
+  .arch-btn span { display: none; }
+}
+
+/* ── Responsive: Mobile ≤ 768px ── */
+@media (max-width: 768px) {
+  /* Show hamburger, hide desktop collapse btn */
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    cursor: pointer;
+    color: var(--t-secondary);
+    flex-shrink: 0;
+    transition: all .15s;
+  }
+  .mobile-menu-btn:hover { background: var(--bg-3); color: var(--t-primary); }
+
+  /* Sidebar becomes a fixed overlay drawer */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 250;
+    width: 268px !important;
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+    box-shadow: 4px 0 24px rgba(0,0,0,.15);
+  }
+  /* Open state: not collapsed */
+  .sidebar:not(.collapsed) {
+    transform: translateX(0);
+  }
+  /* Collapsed = hidden off-screen */
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+    width: 268px !important;
+  }
+
+  /* Backdrop */
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 240;
+    backdrop-filter: blur(1px);
+  }
+
+  /* Topnav adjustments */
+  .topnav { padding: 0 12px; gap: 8px; }
+  .topnav-sep { display: none; }
+  .page-title-tool { display: none; }
+  .arch-btn { padding: 5px 8px; }
+  .nav-arrow { width: 24px; height: 24px; }
+
+  /* Content padding reduced */
+  .content { padding: 14px; }
+
+  /* Chat panel full-screen on mobile */
+  .ask-panel { width: 100%; left: 0; }
+}
+
+/* Backdrop hidden on desktop */
+@media (min-width: 769px) {
+  .sidebar-backdrop { display: none; }
+  .mobile-menu-btn { display: none; }
+}
+
+/* ── Responsive: Small mobile ≤ 480px ── */
+@media (max-width: 480px) {
+  .topnav { padding: 0 10px; gap: 6px; }
+  .page-title-cat { font-size: 10px; padding: 2px 6px; }
+  .arch-btn { display: none; }
+  .content { padding: 10px; }
+}
 </style>
