@@ -204,30 +204,88 @@
       </div>
     </div>
 
-    <!-- ── Ask Panel ── -->
+    <!-- ── Chat Bot Panel ── -->
     <Transition name="slide-panel">
       <div class="ask-panel" v-if="askPanelOpen">
+
+        <!-- Header -->
         <div class="ask-panel-header">
           <div class="ask-panel-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Ask Claude
+            MCP Assistant
           </div>
-          <button class="ask-panel-close" @click="askPanelOpen = false">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <div class="ask-panel-header-actions">
+            <button class="ask-panel-close" title="Clear chat" @click="clearChat">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="ask-panel-close" @click="askPanelOpen = false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- API Key setup -->
+        <div v-if="!apiKey" class="chat-setup">
+          <div class="chat-setup-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <p class="chat-setup-title">Enter your Anthropic API Key</p>
+          <p class="chat-setup-desc">Your key is stored locally in your browser and never sent anywhere except the Anthropic API.</p>
+          <input
+            v-model="apiKeyInput"
+            type="password"
+            placeholder="sk-ant-..."
+            class="chat-key-input"
+            @keydown.enter="saveApiKey"
+          />
+          <button class="chat-key-btn" @click="saveApiKey" :disabled="!apiKeyInput.trim()">
+            Connect
           </button>
+          <a href="https://console.anthropic.com/settings/keys" target="_blank" class="chat-key-link">Get API key →</a>
         </div>
-        <div class="ask-panel-body">
-          <div class="ask-label">Suggested prompt</div>
-          <div class="ask-prompt-box">{{ askPrompt }}</div>
-          <p class="ask-hint">Paste into a Claude conversation or use directly in Claude Code with the MCP server connected.</p>
+
+        <!-- Chat messages -->
+        <div v-else class="chat-messages" ref="chatEl">
+          <div v-if="chatMessages.length === 0" class="chat-empty">
+            <div class="chat-empty-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <p class="chat-empty-title">Ask me anything about the MCP servers</p>
+            <div class="chat-suggestions">
+              <button v-for="s in suggestions" :key="s" class="chat-suggestion" @click="sendSuggestion(s)">{{ s }}</button>
+            </div>
+          </div>
+          <div v-for="(msg, i) in chatMessages" :key="i" class="chat-msg" :class="`chat-msg--${msg.role}`">
+            <div class="chat-msg-bubble">{{ msg.content }}</div>
+          </div>
+          <div v-if="chatLoading" class="chat-msg chat-msg--assistant">
+            <div class="chat-msg-bubble chat-typing">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
         </div>
-        <div class="ask-panel-footer">
-          <button class="copy-btn" :class="{ copied }" @click="copyPrompt">
-            <svg v-if="!copied" width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            {{ copied ? 'Copied!' : 'Copy prompt' }}
-          </button>
+
+        <!-- Input -->
+        <div v-if="apiKey" class="chat-input-area">
+          <div v-if="chatError" class="chat-error">{{ chatError }}</div>
+          <div class="chat-input-row">
+            <textarea
+              v-model="chatInput"
+              class="chat-input"
+              placeholder="Ask about any MCP tool, server or usage…"
+              rows="2"
+              @keydown.enter.exact.prevent="sendMessage"
+            ></textarea>
+            <button class="chat-send-btn" @click="sendMessage" :disabled="chatLoading || !chatInput.trim()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polygon points="22 2 15 22 11 13 2 9 22 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            </button>
+          </div>
+          <div class="chat-input-footer">
+            <span>Enter to send · Shift+Enter for newline</span>
+            <button class="chat-key-reset" @click="resetApiKey">Change key</button>
+          </div>
         </div>
+
       </div>
     </Transition>
 
@@ -235,7 +293,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { servers } from '../data/serverRegistry.js'
 import ToolCard from '../components/ToolCard.vue'
@@ -243,10 +301,24 @@ import ToolCard from '../components/ToolCard.vue'
 const route = useRoute()
 const sidebarCollapsed = ref(false)
 const askPanelOpen = ref(false)
-const askPrompt = ref('')
-const copied = ref(false)
 const searchQuery = ref('')
 const contentEl = ref(null)
+
+// ── Chat state ──
+const apiKey = ref(localStorage.getItem('anthropic_key') || '')
+const apiKeyInput = ref('')
+const chatMessages = ref([])
+const chatLoading = ref(false)
+const chatInput = ref('')
+const chatError = ref('')
+const chatEl = ref(null)
+
+const suggestions = [
+  'What tools does the ABAP MCP server have?',
+  'How do I use the UI5 MCP to create an app?',
+  'What is the difference between Fiori and UI5 MCP?',
+  'How does the searchObject tool work?',
+]
 
 const server = computed(() => servers[route.meta?.server] || servers.abap)
 const serverCats = computed(() => server.value.cats)
@@ -341,16 +413,124 @@ function scrollTop() {
   if (contentEl.value) contentEl.value.scrollTop = 0
 }
 
-function handleAsk(toolName) {
-  askPrompt.value = `Tell me more about the ${toolName} tool in ${server.value.name} and when I should use it`
-  askPanelOpen.value = true
-  copied.value = false
+function scrollChat() {
+  nextTick(() => {
+    if (chatEl.value) chatEl.value.scrollTop = chatEl.value.scrollHeight
+  })
 }
 
-async function copyPrompt() {
-  await navigator.clipboard.writeText(askPrompt.value)
-  copied.value = true
-  setTimeout(() => { copied.value = false }, 2000)
+function handleAsk(toolName) {
+  askPanelOpen.value = true
+  if (apiKey.value) {
+    chatInput.value = `Tell me more about the ${toolName} tool in ${server.value.name} and when I should use it`
+  }
+}
+
+function saveApiKey() {
+  const key = apiKeyInput.value.trim()
+  if (!key) return
+  apiKey.value = key
+  localStorage.setItem('anthropic_key', key)
+  apiKeyInput.value = ''
+}
+
+function resetApiKey() {
+  apiKey.value = ''
+  apiKeyInput.value = ''
+  localStorage.removeItem('anthropic_key')
+  chatMessages.value = []
+  chatError.value = ''
+}
+
+function clearChat() {
+  chatMessages.value = []
+  chatError.value = ''
+}
+
+async function sendSuggestion(text) {
+  chatInput.value = text
+  await sendMessage()
+}
+
+// Build a comprehensive system prompt from all server data
+function buildSystemPrompt() {
+  const lines = []
+  lines.push(`You are an MCP Tool Assistant. You help developers understand and use SAP MCP (Model Context Protocol) servers. You have detailed knowledge of all three MCP servers listed below. Answer concisely and helpfully. Use markdown formatting where appropriate.`)
+  lines.push('')
+
+  for (const [serverKey, srv] of Object.entries(servers)) {
+    lines.push(`## ${srv.name}`)
+    lines.push(`${srv.subtitle}`)
+    lines.push('')
+    for (const [catKey, cat] of Object.entries(srv.cats)) {
+      lines.push(`### Category: ${cat.label}`)
+      for (const toolKey of cat.tools) {
+        const t = srv.tools[toolKey]
+        if (!t) continue
+        lines.push(`**${toolKey}** (${t.method || 'NONE'})`)
+        if (t.endpoint) lines.push(`  Endpoint: ${t.endpoint}`)
+        if (t.desc) lines.push(`  Description: ${t.desc}`)
+        if (t.params && t.params.length) {
+          const paramList = t.params.map(p => `${p.name}${p.required ? '*' : ''} (${p.type}): ${p.desc}`).join('; ')
+          lines.push(`  Parameters: ${paramList}`)
+        }
+        lines.push('')
+      }
+    }
+  }
+
+  return lines.join('\n')
+}
+
+async function sendMessage() {
+  const text = chatInput.value.trim()
+  if (!text || chatLoading.value) return
+
+  chatError.value = ''
+  chatMessages.value.push({ role: 'user', content: text })
+  chatInput.value = ''
+  chatLoading.value = true
+  scrollChat()
+
+  try {
+    const messages = chatMessages.value
+      .slice(0, -1) // exclude the one we just pushed (will be added fresh)
+      .concat([{ role: 'user', content: text }])
+      .map(m => ({ role: m.role, content: m.content }))
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey.value,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-3-5-haiku-20241022',
+        max_tokens: 1024,
+        system: buildSystemPrompt(),
+        messages: messages,
+      }),
+    })
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}))
+      throw new Error(err?.error?.message || `API error ${response.status}`)
+    }
+
+    const data = await response.json()
+    const reply = data.content?.[0]?.text || '(no response)'
+    chatMessages.value.push({ role: 'assistant', content: reply })
+  } catch (e) {
+    chatError.value = e.message || 'Something went wrong. Check your API key.'
+    // Remove the user message on error so they can retry
+    chatMessages.value.pop()
+    chatInput.value = text
+  } finally {
+    chatLoading.value = false
+    scrollChat()
+  }
 }
 </script>
 
@@ -486,4 +666,63 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 .copy-btn.copied { background: var(--c-post); }
 .slide-panel-enter-active, .slide-panel-leave-active { transition: transform .22s cubic-bezier(.4,0,.2,1), opacity .22s; }
 .slide-panel-enter-from, .slide-panel-leave-to { transform: translateX(100%); opacity: 0; }
+
+/* ── Chat UI ── */
+.ask-panel-header-actions { display: flex; align-items: center; gap: 6px; }
+
+/* API key setup screen */
+.chat-setup { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; gap: 12px; text-align: center; }
+.chat-setup-icon { width: 52px; height: 52px; background: var(--accent-bg); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: var(--accent); margin-bottom: 4px; }
+.chat-setup-title { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--t-primary); }
+.chat-setup-desc { font-size: 12.5px; color: var(--t-muted); line-height: 1.6; max-width: 270px; }
+.chat-key-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font-mono); font-size: 12.5px; background: var(--bg-2); color: var(--t-primary); outline: none; transition: border-color .15s; }
+.chat-key-input:focus { border-color: var(--accent); }
+.chat-key-input::placeholder { color: var(--t-faint); }
+.chat-key-btn { width: 100%; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer; transition: background .15s; }
+.chat-key-btn:hover:not(:disabled) { background: var(--accent-2); }
+.chat-key-btn:disabled { opacity: .45; cursor: default; }
+.chat-key-link { font-size: 12px; color: var(--accent); text-decoration: none; }
+.chat-key-link:hover { text-decoration: underline; }
+
+/* Messages area */
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px 16px 8px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+.chat-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 24px; text-align: center; }
+.chat-empty-icon { width: 44px; height: 44px; background: var(--bg-3); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--t-muted); }
+.chat-empty-title { font-size: 13px; color: var(--t-secondary); font-weight: 500; }
+.chat-suggestions { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.chat-suggestion { background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-family: var(--font-body); font-size: 12px; color: var(--t-secondary); cursor: pointer; text-align: left; transition: all .15s; line-height: 1.4; }
+.chat-suggestion:hover { background: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+
+/* Message bubbles */
+.chat-msg { display: flex; }
+.chat-msg--user { justify-content: flex-end; }
+.chat-msg--assistant { justify-content: flex-start; }
+.chat-msg-bubble { max-width: 88%; padding: 10px 13px; border-radius: 12px; font-size: 13px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+.chat-msg--user .chat-msg-bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+.chat-msg--assistant .chat-msg-bubble { background: var(--bg-2); border: 1px solid var(--border); color: var(--t-primary); border-bottom-left-radius: 4px; }
+
+/* Typing indicator */
+.chat-typing { display: flex; align-items: center; gap: 4px; padding: 12px 14px; }
+.chat-typing span { width: 7px; height: 7px; background: var(--t-faint); border-radius: 50%; animation: chat-bounce .9s infinite ease-in-out; }
+.chat-typing span:nth-child(1) { animation-delay: 0s; }
+.chat-typing span:nth-child(2) { animation-delay: .18s; }
+.chat-typing span:nth-child(3) { animation-delay: .36s; }
+@keyframes chat-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+}
+
+/* Input area */
+.chat-input-area { flex-shrink: 0; padding: 10px 12px 12px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
+.chat-error { font-size: 11.5px; color: var(--c-error); background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; padding: 7px 10px; line-height: 1.5; }
+.chat-input-row { display: flex; gap: 8px; align-items: flex-end; }
+.chat-input { flex: 1; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font-body); font-size: 13px; background: var(--bg-2); color: var(--t-primary); resize: none; outline: none; line-height: 1.5; transition: border-color .15s; max-height: 120px; }
+.chat-input:focus { border-color: var(--accent); }
+.chat-input::placeholder { color: var(--t-faint); }
+.chat-send-btn { width: 36px; height: 36px; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s; }
+.chat-send-btn:hover:not(:disabled) { background: var(--accent-2); }
+.chat-send-btn:disabled { opacity: .4; cursor: default; }
+.chat-input-footer { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--t-faint); }
+.chat-key-reset { background: none; border: none; cursor: pointer; font-size: 11px; color: var(--t-muted); text-decoration: underline; padding: 0; }
+.chat-key-reset:hover { color: var(--t-primary); }
 </style>
