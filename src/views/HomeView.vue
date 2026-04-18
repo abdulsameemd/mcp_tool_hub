@@ -74,28 +74,6 @@
       </div>
     </section>
 
-    <!-- ── Presentation Banner ── -->
-    <section class="ppt-banner">
-      <div class="ppt-inner">
-        <div class="ppt-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <div class="ppt-body">
-          <div class="ppt-label">10-slide presentation</div>
-          <div class="ppt-title">SAP Development AI — DEWA</div>
-          <div class="ppt-phases">
-            <span class="ppt-phase ppt-phase--blue">Phase 1 · UI5 / Fiori MCP</span>
-            <span class="ppt-phase ppt-phase--green">Phase 2 · ABAP Custom MCP</span>
-            <span class="ppt-phase ppt-phase--amber">Phase 3 · BTP Integration Suite</span>
-          </div>
-        </div>
-        <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          Open Presentation
-        </a>
-      </div>
-    </section>
-
     <!-- ── Server cards ── -->
     <section class="servers">
       <div class="servers-inner">
@@ -258,6 +236,26 @@
             <div class="how-step-desc">{{ step.desc }}</div>
           </div>
         </div>
+        <!-- Presentation banner inside How It Works -->
+        <div class="ppt-inner">
+          <div class="ppt-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="ppt-body">
+            <div class="ppt-label">10-slide presentation</div>
+            <div class="ppt-title">SAP Development AI — DEWA</div>
+            <div class="ppt-phases">
+              <span class="ppt-phase ppt-phase--blue">Phase 1 · UI5 / Fiori MCP</span>
+              <span class="ppt-phase ppt-phase--green">Phase 2 · ABAP Custom MCP</span>
+              <span class="ppt-phase ppt-phase--amber">Phase 3 · BTP Integration Suite</span>
+            </div>
+          </div>
+          <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Open Presentation
+          </a>
+        </div>
+
         <div class="corner-credit">MOROHUB &mdash; SAP Technical Services</div>
       </div>
     </section>
@@ -408,8 +406,8 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 .corner-credit { text-align: right; margin-top: 20px; font-size: 11px; font-family: var(--font-mono); color: var(--t-faint); letter-spacing: .03em; }
 
 /* ── Presentation Banner ── */
-.ppt-banner { padding: 0 24px 40px; }
 .ppt-inner {
+  margin-top: 28px;
   max-width: 1080px;
   margin: 0 auto;
   background: linear-gradient(135deg, #0f2d1a 0%, #0f4024 60%, #1a5c38 100%);
