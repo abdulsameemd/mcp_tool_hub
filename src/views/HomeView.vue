@@ -72,6 +72,31 @@
           <div class="hs-lbl">2023+ · CAP · Fiori · UI5</div>
         </div>
       </div>
+
+      <!-- Presentation banner — full-width strip at bottom of hero -->
+      <div class="ppt-strip">
+        <div class="ppt-strip-left">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="ppt-strip-title">SAP Development AI — DEWA</span>
+          <span class="ppt-strip-divider"></span>
+        </div>
+        <div class="ppt-strip-ticker">
+          <div class="ppt-strip-track">
+            <span class="ppt-chip ppt-chip--blue">Phase 1 · UI5 / Fiori MCP</span>
+            <span class="ppt-chip ppt-chip--green">Phase 2 · ABAP Custom MCP</span>
+            <span class="ppt-chip ppt-chip--amber">Phase 3 · BTP Integration Suite</span>
+            <span class="ppt-chip-sep">·</span>
+            <span class="ppt-chip ppt-chip--blue">Phase 1 · UI5 / Fiori MCP</span>
+            <span class="ppt-chip ppt-chip--green">Phase 2 · ABAP Custom MCP</span>
+            <span class="ppt-chip ppt-chip--amber">Phase 3 · BTP Integration Suite</span>
+            <span class="ppt-chip-sep">·</span>
+          </div>
+        </div>
+        <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-strip-btn">
+          Open
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </a>
+      </div>
     </section>
 
     <!-- ── Server cards ── -->
@@ -222,35 +247,6 @@
       </div>
     </section>
 
-    <!-- ── Presentation Banner ── -->
-    <section class="ppt-section">
-      <div class="ppt-inner">
-        <div class="ppt-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </div>
-        <div class="ppt-body">
-          <div class="ppt-label">10-slide presentation</div>
-          <div class="ppt-title">SAP Development AI — DEWA</div>
-        </div>
-        <div class="ppt-ticker">
-          <div class="ppt-ticker-track">
-            <span class="ppt-phase ppt-phase--blue">Phase 1 · UI5 / Fiori MCP</span>
-            <span class="ppt-phase ppt-phase--green">Phase 2 · ABAP Custom MCP</span>
-            <span class="ppt-phase ppt-phase--amber">Phase 3 · BTP Integration Suite</span>
-            <span class="ppt-sep">·</span>
-            <span class="ppt-phase ppt-phase--blue">Phase 1 · UI5 / Fiori MCP</span>
-            <span class="ppt-phase ppt-phase--green">Phase 2 · ABAP Custom MCP</span>
-            <span class="ppt-phase ppt-phase--amber">Phase 3 · BTP Integration Suite</span>
-            <span class="ppt-sep">·</span>
-          </div>
-        </div>
-        <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-btn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          Open Presentation
-        </a>
-      </div>
-    </section>
-
     <!-- ── How it works ── -->
     <section class="how">
       <div class="how-inner">
@@ -326,7 +322,7 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 .topbar-gh:hover { background: var(--bg-3); color: var(--t-primary); }
 
 /* ── Hero ── */
-.hero { max-width: 1140px; margin: 0 auto; padding: 64px 32px 48px; display: grid; grid-template-columns: 1fr 320px; gap: 48px; align-items: center; }
+.hero { max-width: 1140px; margin: 0 auto; padding: 64px 32px 48px; display: grid; grid-template-columns: 1fr 320px; gap: 32px; align-items: center; }
 @media (max-width: 860px) { .hero { grid-template-columns: 1fr; } .hero-grid { display: none; } }
 .hero-inner { display: flex; flex-direction: column; gap: 20px; }
 .hero-eyebrow { display: flex; align-items: center; gap: 8px; font-size: 12px; font-family: var(--font-mono); color: var(--accent); font-weight: 500; letter-spacing: .04em; }
@@ -416,80 +412,89 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 /* Corner credit */
 .corner-credit { text-align: right; margin-top: 20px; font-size: 11px; font-family: var(--font-mono); color: var(--t-faint); letter-spacing: .03em; }
 
-/* ── Presentation Banner ── */
-.ppt-section {
-  padding: 0 32px 40px;
-}
-.ppt-inner {
-  max-width: 1140px;
-  margin: 0 auto;
-  padding: 18px 28px;
-  background: linear-gradient(135deg, #0f2d1a 0%, #0f4024 60%, #1a5c38 100%);
-  border-radius: 14px;
-  overflow: hidden;
+/* ── Presentation Banner Strip (inside hero) ── */
+.ppt-strip {
+  grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  gap: 20px;
-}
-.ppt-icon {
-  width: 40px; height: 40px;
-  background: rgba(255,255,255,.1);
+  gap: 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  color: #86efac;
+  overflow: hidden;
+  height: 44px;
+}
+.ppt-strip-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  flex-shrink: 0;
+  color: var(--t-muted);
+}
+.ppt-strip-title {
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--t-primary);
+  white-space: nowrap;
+}
+.ppt-strip-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
   flex-shrink: 0;
 }
-.ppt-body { flex-shrink: 0; }
-.ppt-label { font-family: var(--font-mono); font-size: 10px; color: #86efac; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 3px; }
-.ppt-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: #fff; white-space: nowrap; }
 
 /* Scrolling ticker */
-.ppt-ticker {
+.ppt-strip-ticker {
   flex: 1;
   overflow: hidden;
-  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
 }
-.ppt-ticker-track {
+.ppt-strip-track {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: max-content;
-  animation: ppt-scroll 18s linear infinite;
+  animation: ppt-scroll 20s linear infinite;
 }
-.ppt-ticker-track:hover { animation-play-state: paused; }
+.ppt-strip-track:hover { animation-play-state: paused; }
 @keyframes ppt-scroll {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-.ppt-phase {
+.ppt-chip {
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: 20px;
-  border: 1px solid rgba(255,255,255,.2);
   white-space: nowrap;
   flex-shrink: 0;
 }
-.ppt-phase--blue  { color: #93c5fd; }
-.ppt-phase--green { color: #86efac; }
-.ppt-phase--amber { color: #fcd34d; }
-.ppt-sep { color: rgba(255,255,255,.25); font-size: 18px; flex-shrink: 0; }
+.ppt-chip--blue  { background: #eff6ff; color: #1e40af; }
+.ppt-chip--green { background: #f0fdf4; color: #14532d; }
+.ppt-chip--amber { background: #fffbeb; color: #78350f; }
+.ppt-chip-sep { color: var(--border-2); font-size: 16px; flex-shrink: 0; }
 
-.ppt-btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 9px 20px;
-  border-radius: 8px;
-  background: #fff;
-  color: #0f4024;
+.ppt-strip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 16px;
+  height: 44px;
+  background: var(--bg-3);
+  border-left: 1px solid var(--border);
+  color: var(--accent);
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: background .15s;
+  transition: background .15s, color .15s;
 }
-.ppt-btn:hover { background: #f0fdf4; }
+.ppt-strip-btn:hover { background: var(--accent); color: #fff; }
 </style>
