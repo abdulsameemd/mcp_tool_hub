@@ -407,7 +407,9 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 
 /* ── Presentation Banner ── */
 .ppt-inner {
-  margin-top: 28px;
+  margin-top: 48px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
   max-width: 1080px;
   margin: 0 auto;
   background: linear-gradient(135deg, #0f2d1a 0%, #0f4024 60%, #1a5c38 100%);
