@@ -74,6 +74,57 @@
       </div>
     </section>
 
+    <!-- ── Presentation Banner ── -->
+    <section class="ppt-banner">
+      <div class="ppt-inner">
+        <div class="ppt-left">
+          <div class="ppt-eyebrow">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Presentation
+          </div>
+          <h2 class="ppt-title">SAP Development AI — DEWA</h2>
+          <p class="ppt-desc">A phased roadmap for AI-assisted SAP development using Model Context Protocol — covering UI5/Fiori MCP, ABAP Custom MCP, and BTP Integration Suite.</p>
+          <div class="ppt-phases">
+            <div class="ppt-phase ppt-phase--blue">
+              <span class="ppt-phase-label">Phase 1</span>
+              <span class="ppt-phase-name">UI5 / Fiori MCP</span>
+            </div>
+            <div class="ppt-phase ppt-phase--green">
+              <span class="ppt-phase-label">Phase 2</span>
+              <span class="ppt-phase-name">ABAP Custom MCP</span>
+            </div>
+            <div class="ppt-phase ppt-phase--amber">
+              <span class="ppt-phase-label">Phase 3</span>
+              <span class="ppt-phase-name">BTP Integration Suite</span>
+            </div>
+          </div>
+        </div>
+        <div class="ppt-right">
+          <div class="ppt-slide-preview">
+            <div class="ppt-slide-mock">
+              <div class="ppt-mock-bar"></div>
+              <div class="ppt-mock-title">SAP UI5/Fiori Development</div>
+              <div class="ppt-mock-sub">UI5 / Fiori MCP · AI Assisted Frontend Development</div>
+              <div class="ppt-mock-dots">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="ppt-slide-count">10 slides</div>
+          </div>
+          <div class="ppt-actions">
+            <a href="./SAP_Development_AI_DEWA.pptx" download="SAP_Development_AI_DEWA.pptx" class="ppt-btn ppt-btn--primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              Download PPTX
+            </a>
+            <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-btn ppt-btn--ghost">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
+              Open
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Server cards ── -->
     <section class="servers">
       <div class="servers-inner">
@@ -219,57 +270,6 @@
           </div>
         </div>
 
-      </div>
-    </section>
-
-    <!-- ── Presentation Banner ── -->
-    <section class="ppt-banner">
-      <div class="ppt-inner">
-        <div class="ppt-left">
-          <div class="ppt-eyebrow">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            Presentation
-          </div>
-          <h2 class="ppt-title">SAP Development AI — DEWA</h2>
-          <p class="ppt-desc">A phased roadmap for AI-assisted SAP development using Model Context Protocol — covering UI5/Fiori MCP, ABAP Custom MCP, and BTP Integration Suite.</p>
-          <div class="ppt-phases">
-            <div class="ppt-phase ppt-phase--blue">
-              <span class="ppt-phase-label">Phase 1</span>
-              <span class="ppt-phase-name">UI5 / Fiori MCP</span>
-            </div>
-            <div class="ppt-phase ppt-phase--green">
-              <span class="ppt-phase-label">Phase 2</span>
-              <span class="ppt-phase-name">ABAP Custom MCP</span>
-            </div>
-            <div class="ppt-phase ppt-phase--amber">
-              <span class="ppt-phase-label">Phase 3</span>
-              <span class="ppt-phase-name">BTP Integration Suite</span>
-            </div>
-          </div>
-        </div>
-        <div class="ppt-right">
-          <div class="ppt-slide-preview">
-            <div class="ppt-slide-mock">
-              <div class="ppt-mock-bar"></div>
-              <div class="ppt-mock-title">SAP UI5/Fiori Development</div>
-              <div class="ppt-mock-sub">UI5 / Fiori MCP · AI Assisted Frontend Development</div>
-              <div class="ppt-mock-dots">
-                <span></span><span></span><span></span>
-              </div>
-            </div>
-            <div class="ppt-slide-count">10 slides</div>
-          </div>
-          <div class="ppt-actions">
-            <a href="./SAP_Development_AI_DEWA.pptx" download="SAP_Development_AI_DEWA.pptx" class="ppt-btn ppt-btn--primary">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              Download PPTX
-            </a>
-            <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-btn ppt-btn--ghost">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
-              Open
-            </a>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -449,6 +449,11 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
   gap: 48px;
   position: relative;
   overflow: hidden;
+  animation: bannerIn .6s ease both;
+}
+@keyframes bannerIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .ppt-inner::before {
   content: '';
@@ -457,6 +462,7 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
   width: 240px; height: 240px;
   background: rgba(255,255,255,.04);
   border-radius: 50%;
+  pointer-events: none;
 }
 .ppt-inner::after {
   content: '';
@@ -465,6 +471,7 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
   width: 160px; height: 160px;
   background: rgba(255,255,255,.03);
   border-radius: 50%;
+  pointer-events: none;
 }
 .ppt-left { flex: 1; min-width: 0; position: relative; z-index: 1; }
 .ppt-eyebrow {
