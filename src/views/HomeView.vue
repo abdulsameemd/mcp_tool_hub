@@ -111,16 +111,6 @@
             </div>
             <div class="ppt-slide-count">10 slides</div>
           </div>
-          <div class="ppt-actions">
-            <a href="./SAP_Development_AI_DEWA.pptx" download="SAP_Development_AI_DEWA.pptx" class="ppt-btn ppt-btn--primary">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              Download PPTX
-            </a>
-            <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-btn ppt-btn--ghost">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
-              Open
-            </a>
-          </div>
         </div>
       </div>
     </section>
@@ -447,31 +437,6 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
   display: flex;
   align-items: center;
   gap: 48px;
-  position: relative;
-  overflow: hidden;
-  animation: bannerIn .6s ease both;
-}
-@keyframes bannerIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.ppt-inner::before {
-  content: '';
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 240px; height: 240px;
-  background: rgba(255,255,255,.04);
-  border-radius: 50%;
-  pointer-events: none;
-}
-.ppt-inner::after {
-  content: '';
-  position: absolute;
-  bottom: -40px; left: 30%;
-  width: 160px; height: 160px;
-  background: rgba(255,255,255,.03);
-  border-radius: 50%;
-  pointer-events: none;
 }
 .ppt-left { flex: 1; min-width: 0; position: relative; z-index: 1; }
 .ppt-eyebrow {
