@@ -231,10 +231,17 @@
         <div class="ppt-body">
           <div class="ppt-label">10-slide presentation</div>
           <div class="ppt-title">SAP Development AI — DEWA</div>
-          <div class="ppt-phases">
+        </div>
+        <div class="ppt-ticker">
+          <div class="ppt-ticker-track">
             <span class="ppt-phase ppt-phase--blue">Phase 1 · UI5 / Fiori MCP</span>
             <span class="ppt-phase ppt-phase--green">Phase 2 · ABAP Custom MCP</span>
             <span class="ppt-phase ppt-phase--amber">Phase 3 · BTP Integration Suite</span>
+            <span class="ppt-sep">·</span>
+            <span class="ppt-phase ppt-phase--blue">Phase 1 · UI5 / Fiori MCP</span>
+            <span class="ppt-phase ppt-phase--green">Phase 2 · ABAP Custom MCP</span>
+            <span class="ppt-phase ppt-phase--amber">Phase 3 · BTP Integration Suite</span>
+            <span class="ppt-sep">·</span>
           </div>
         </div>
         <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-btn">
@@ -410,40 +417,64 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 .corner-credit { text-align: right; margin-top: 20px; font-size: 11px; font-family: var(--font-mono); color: var(--t-faint); letter-spacing: .03em; }
 
 /* ── Presentation Banner ── */
-.ppt-section { padding: 0 0 0; background: var(--bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.ppt-section {
+  background: linear-gradient(135deg, #0f2d1a 0%, #0f4024 60%, #1a5c38 100%);
+  overflow: hidden;
+}
 .ppt-inner {
   max-width: 1140px;
   margin: 0 auto;
-  padding: 20px 32px;
-  background: linear-gradient(135deg, #0f2d1a 0%, #0f4024 60%, #1a5c38 100%);
+  padding: 18px 32px;
   display: flex;
   align-items: center;
   gap: 20px;
-  flex-wrap: wrap;
 }
 .ppt-icon {
-  width: 44px; height: 44px;
+  width: 40px; height: 40px;
   background: rgba(255,255,255,.1);
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   color: #86efac;
   flex-shrink: 0;
 }
-.ppt-body { flex: 1; min-width: 200px; }
-.ppt-label { font-family: var(--font-mono); font-size: 10px; color: #86efac; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 4px; }
-.ppt-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 10px; }
-.ppt-phases { display: flex; gap: 8px; flex-wrap: wrap; }
+.ppt-body { flex-shrink: 0; }
+.ppt-label { font-family: var(--font-mono); font-size: 10px; color: #86efac; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 3px; }
+.ppt-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: #fff; white-space: nowrap; }
+
+/* Scrolling ticker */
+.ppt-ticker {
+  flex: 1;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+.ppt-ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  animation: ppt-scroll 18s linear infinite;
+}
+.ppt-ticker-track:hover { animation-play-state: paused; }
+@keyframes ppt-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 .ppt-phase {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 500;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
   border: 1px solid rgba(255,255,255,.2);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .ppt-phase--blue  { color: #93c5fd; }
 .ppt-phase--green { color: #86efac; }
 .ppt-phase--amber { color: #fcd34d; }
+.ppt-sep { color: rgba(255,255,255,.25); font-size: 18px; flex-shrink: 0; }
+
 .ppt-btn {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 9px 20px;
