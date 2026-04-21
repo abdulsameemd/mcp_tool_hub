@@ -92,7 +92,7 @@
             <span class="ppt-chip-sep">·</span>
           </div>
         </div>
-        <a href="./SAP_Development_AI_DEWA.pptx" class="ppt-strip-btn">
+        <a href="./SAP_Development_AI.pptx" class="ppt-strip-btn">
           Open
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
         </a>
