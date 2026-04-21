@@ -179,6 +179,10 @@
         </div>
 
         <div class="topnav-right">
+          <button class="share-btn" @click="copyShareLink" :title="shareCopied ? 'Copied!' : 'Copy share link'">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="2"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span>{{ shareCopied ? 'Copied!' : 'Share' }}</span>
+          </button>
           <RouterLink :to="`/${server.key}/diagrams`" class="arch-btn">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M9 21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             Architecture
@@ -300,12 +304,14 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { servers } from '../data/serverRegistry.js'
 import ToolCard from '../components/ToolCard.vue'
 
 const route = useRoute()
+const router = useRouter()
 const sidebarCollapsed = ref(false)
+const shareCopied = ref(false)
 const askPanelOpen = ref(false)
 const searchQuery = ref('')
 const contentEl = ref(null)
@@ -343,10 +349,27 @@ watch(server, (newServer) => {
   askPanelOpen.value = false
 })
 
+// Sync URL when tool changes
+watch(currentTool, (toolKey) => {
+  router.replace({ query: { tool: toolKey } })
+})
+
 onMounted(() => {
   // Auto-collapse sidebar on mobile
   if (window.innerWidth < 768) sidebarCollapsed.value = true
 
+  // Deep-link: ?tool=toolName takes priority
+  const toolParam = route.query.tool
+  if (toolParam) {
+    for (const [catKey, cat] of Object.entries(serverCats.value)) {
+      if (cat.tools.includes(toolParam)) {
+        currentCat.value = catKey
+        currentTool.value = toolParam
+        return
+      }
+    }
+  }
+  // Fallback: ?cat=catKey
   const cat = route.query.cat
   if (cat && serverCats.value[cat]) {
     currentCat.value = cat
@@ -496,6 +519,14 @@ function buildSystemPrompt() {
   }
 
   return lines.join('\n')
+}
+
+async function copyShareLink() {
+  const base = window.location.origin + window.location.pathname
+  const url = `${base}?tool=${currentTool.value}`
+  await navigator.clipboard.writeText(url)
+  shareCopied.value = true
+  setTimeout(() => { shareCopied.value = false }, 2000)
 }
 
 async function sendMessage() {
@@ -658,6 +689,9 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 .nav-tab:hover { color: var(--t-secondary); }
 .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
 .topnav-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: auto; }
+.share-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 6px; font-family: var(--font-body); font-size: 12px; font-weight: 500; color: var(--t-secondary); cursor: pointer; transition: all .15s; white-space: nowrap; }
+.share-btn:hover { background: var(--bg-3); color: var(--t-primary); }
+.share-btn.copied, .share-btn:has(span:not(:empty)) { }
 .arch-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 6px; font-family: var(--font-sans); font-size: 12px; font-weight: 500; color: var(--t-secondary); text-decoration: none; transition: all .15s; white-space: nowrap; }
 .arch-btn:hover { background: #0f4024; color: #fff; border-color: #0f4024; }
 .tool-counter { font-family: var(--font-mono); font-size: 11px; color: var(--t-muted); }
@@ -826,6 +860,7 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
   .topnav { padding: 0 10px; gap: 6px; }
   .page-title-cat { font-size: 10px; padding: 2px 6px; }
   .arch-btn { display: none; }
+  .share-btn span { display: none; }
   .content { padding: 10px; }
 }
 </style>

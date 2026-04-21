@@ -11,200 +11,219 @@
         <div class="arch-sep"></div>
         <div class="arch-topbar-title">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M9 21V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          Claude + SAP Fiori / UI5 — Architecture
+          {{ isUi5 ? 'UI5 MCP Server — Architecture' : 'Claude + SAP Fiori / UI5 — Architecture' }}
         </div>
       </div>
 
       <div class="arch-topbar-right">
-        <a href="/claude_sap_fiori_architecture.svg" download="claude_sap_fiori_architecture.svg" class="download-btn">
+        <a v-if="!isUi5" :href="svgBase + 'claude_sap_fiori_architecture.svg'" download="claude_sap_fiori_architecture.svg" class="download-btn">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           Download SVG
         </a>
       </div>
     </header>
 
-    <!-- Diagram area -->
+    <!-- Content -->
     <div class="arch-content">
-      <div class="arch-panel">
+
+      <!-- Fiori: show SVG -->
+      <div v-if="!isUi5" class="arch-panel">
         <div class="arch-panel-header">
           <div class="arch-panel-meta">
-            <span class="arch-badge">SVG</span>
-            <span class="arch-panel-name">Claude + SAP Fiori / UI5 Architecture — DEWA</span>
+            <span class="arch-badge arch-badge--blue">SVG</span>
+            <span class="arch-panel-name">Claude + SAP Fiori / UI5 Architecture</span>
           </div>
           <span class="arch-panel-file">claude_sap_fiori_architecture.svg</span>
         </div>
         <div class="arch-render-wrap">
           <img
-            src="/claude_sap_fiori_architecture.svg"
+            :src="svgBase + 'claude_sap_fiori_architecture.svg'"
             alt="Claude + SAP Fiori/UI5 Architecture"
             class="arch-svg-img"
           />
         </div>
       </div>
-    </div>
 
+      <!-- UI5: Mermaid diagram -->
+      <div v-else class="arch-panel">
+        <div class="arch-panel-header">
+          <div class="arch-panel-meta">
+            <span class="arch-badge arch-badge--amber">Mermaid</span>
+            <span class="arch-panel-name">@ui5/mcp-server — Architecture Overview</span>
+          </div>
+          <span class="arch-panel-file">10 tools · 4 categories</span>
+        </div>
+        <div class="arch-render-wrap">
+          <div v-if="loading" class="arch-loading">Rendering diagram…</div>
+          <div v-else-if="error" class="arch-error">{{ error }}</div>
+          <div v-else class="diag-render" v-html="svg"></div>
+        </div>
+
+        <!-- Legend -->
+        <div class="arch-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:#d97706"></span>Scaffolding — writes files</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Documentation — fetches docs</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#7c3aed"></span>Analysis — reads project</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#16a34a"></span>Quality — lints &amp; validates</div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import mermaid from 'mermaid'
 
 const route = useRoute()
 const isUi5 = computed(() => route.path.startsWith('/ui5'))
 const backRoute = computed(() => isUi5.value ? '/ui5' : '/fiori')
 const backLabel = computed(() => isUi5.value ? 'UI5 Explorer' : 'Fiori Explorer')
+
+// Resolve public base for GitHub Pages sub-path
+const svgBase = import.meta.env.BASE_URL
+
+const svg = ref('')
+const loading = ref(true)
+const error = ref('')
+
+const ui5Diagram = `
+flowchart TD
+  subgraph DEV["🖥️ Claude / GitHub Copilot"]
+    CLAUDE["Natural Language Request"]
+  end
+
+  subgraph MCP["@ui5/mcp-server"]
+    direction TB
+
+    subgraph SC["📦 Scaffolding"]
+      createApp["create_ui5_app"]
+      createCard["create_integration_card"]
+    end
+
+    subgraph DX["📚 Documentation & Guides"]
+      apiRef["get_api_reference"]
+      verInfo["get_version_info"]
+      tsGuide["get_typescript_conversion_guidelines"]
+      guidelines["get_guidelines"]
+      cardGuide["get_integration_cards_guidelines"]
+    end
+
+    subgraph AN["🔍 Analysis"]
+      projInfo["get_project_info"]
+    end
+
+    subgraph QA["✅ Quality"]
+      linter["run_ui5_linter"]
+      manifest["run_manifest_validation"]
+    end
+  end
+
+  subgraph OUT["Outputs"]
+    FS["📁 Local File System"]
+    UI5DOCS["📖 UI5 API Docs / CDN"]
+  end
+
+  CLAUDE -->|"MCP Protocol"| MCP
+  SC -->|"writes app files"| FS
+  AN -->|"reads project"| FS
+  QA -->|"reads & reports"| FS
+  DX -->|"fetches"| UI5DOCS
+`
+
+onMounted(async () => {
+  if (!isUi5.value) { loading.value = false; return }
+
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        fontSize: '13px',
+        primaryColor: '#f5f4f1',
+        primaryTextColor: '#1e1d1a',
+        primaryBorderColor: '#e0deda',
+        lineColor: '#8a8780',
+        secondaryColor: '#eeedea',
+        tertiaryColor: '#faf9f7',
+        clusterBkg: '#faf9f7',
+        clusterBorder: '#e0deda',
+      },
+      flowchart: { padding: 12, nodeSpacing: 32, rankSpacing: 44, curve: 'basis' }
+    })
+
+    const id = 'ui5-arch-diag'
+    const { svg: rendered } = await mermaid.render(id, ui5Diagram.trim())
+    svg.value = rendered
+  } catch (e) {
+    error.value = 'Failed to render diagram: ' + e.message
+  } finally {
+    loading.value = false
+  }
+})
 </script>
 
 <style>
-.arch-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: var(--bg-2);
-  font-family: var(--font-body);
-  position: relative;
+:root {
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --bg: #faf9f7; --bg-2: #f5f4f1; --bg-3: #eeedea; --bg-4: #e5e3de;
+  --t-primary: #1e1d1a; --t-secondary: #5a5852; --t-muted: #8a8780; --t-faint: #b0ada6;
+  --border: #e0deda; --border-2: #cbc9c3;
+  --accent: #0f4024;
 }
 
-/* ── Top bar ── */
-.arch-topbar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 0 24px;
-  height: 52px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-primary); font-size: 14px; -webkit-font-smoothing: antialiased; }
 
-.arch-topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  min-width: 0;
-}
+.arch-layout { display: flex; flex-direction: column; height: 100vh; background: var(--bg-2); }
 
-.back-link {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12.5px;
-  font-family: var(--font-body);
-  color: var(--t-secondary);
-  text-decoration: none;
-  padding: 5px 10px;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  background: var(--bg-2);
-  transition: all .15s;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.back-link:hover { background: var(--bg-3); color: var(--t-primary); border-color: var(--border-2); }
-
+/* Top bar */
+.arch-topbar { display: flex; align-items: center; gap: 16px; padding: 0 20px; height: 52px; background: var(--bg); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.arch-topbar-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.back-link { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--t-secondary); text-decoration: none; padding: 5px 10px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg-2); transition: all .15s; white-space: nowrap; flex-shrink: 0; }
+.back-link:hover { background: var(--bg-3); color: var(--t-primary); }
 .arch-sep { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
-
-.arch-topbar-title {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--t-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
+.arch-topbar-title { display: flex; align-items: center; gap: 7px; font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--t-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .arch-topbar-right { flex-shrink: 0; }
-
-.download-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-family: var(--font-body);
-  color: var(--t-secondary);
-  text-decoration: none;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  background: var(--bg-2);
-  transition: all .15s;
-  white-space: nowrap;
-}
+.download-btn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--t-secondary); text-decoration: none; padding: 6px 12px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg-2); transition: all .15s; white-space: nowrap; }
 .download-btn:hover { background: var(--bg-3); color: var(--t-primary); }
 
-/* ── Content ── */
-.arch-content {
-  flex: 1;
-  overflow: auto;
-  padding: 16px 20px;
-}
+/* Content */
+.arch-content { flex: 1; overflow: auto; padding: 16px 20px; }
+.arch-panel { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.arch-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid var(--border); background: var(--bg-2); flex-wrap: wrap; gap: 8px; }
+.arch-panel-meta { display: flex; align-items: center; gap: 10px; }
+.arch-badge { font-family: var(--font-mono); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; letter-spacing: .04em; }
+.arch-badge--blue  { background: #dbeafe; color: #1e40af; }
+.arch-badge--amber { background: #fef3c7; color: #92400e; }
+.arch-panel-name { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--t-primary); }
+.arch-panel-file { font-family: var(--font-mono); font-size: 11px; color: var(--t-muted); }
 
-.arch-panel {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-}
+/* Render area */
+.arch-render-wrap { padding: 28px 24px; display: flex; justify-content: center; overflow-x: auto; }
+.arch-svg-img { max-width: 860px; width: 100%; height: auto; border-radius: 8px; }
+.arch-loading { color: var(--t-muted); font-size: 13px; padding: 48px; }
+.arch-error { color: #dc2626; font-size: 13px; padding: 48px; background: #fef2f2; border-radius: 8px; }
 
-.arch-panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-2);
-  flex-wrap: wrap;
-  gap: 8px;
-}
+/* Mermaid diagram */
+.diag-render { width: 100%; max-width: 900px; }
+.diag-render svg { width: 100%; height: auto; }
+.diag-render .edgeLabel span { color: #1e1d1a !important; background: rgba(250,249,247,.85) !important; }
 
-.arch-panel-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+/* Legend */
+.arch-legend { display: flex; flex-wrap: wrap; gap: 16px; padding: 14px 20px; border-top: 1px solid var(--border); background: var(--bg-2); }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--t-secondary); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-.arch-badge {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 5px;
-  letter-spacing: .04em;
-  background: #dbeafe;
-  color: #1e40af;
+/* Responsive */
+@media (max-width: 600px) {
+  .arch-topbar { padding: 0 12px; }
+  .arch-topbar-title { font-size: 12px; }
+  .arch-content { padding: 10px; }
+  .arch-render-wrap { padding: 16px 10px; }
 }
-
-.arch-panel-name {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--t-primary);
-}
-
-.arch-panel-file {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--t-muted);
-}
-
-/* ── SVG image ── */
-.arch-render-wrap {
-  padding: 28px 32px;
-  display: flex;
-  justify-content: center;
-}
-
-.arch-svg-img {
-  max-width: 860px;
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
 </style>
