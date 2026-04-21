@@ -55,8 +55,8 @@
         </div>
         <div class="arch-render-wrap">
           <div v-if="loading" class="arch-loading">Rendering diagram…</div>
-          <div v-else-if="error" class="arch-error">{{ error }}</div>
-          <div v-else class="diag-render" v-html="svg"></div>
+          <div v-if="error" class="arch-error">{{ error }}</div>
+          <div ref="diagEl" class="diag-render"></div>
         </div>
 
         <!-- Legend -->
@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import mermaid from 'mermaid'
 
@@ -82,59 +82,51 @@ const isUi5 = computed(() => route.path.startsWith('/ui5'))
 const backRoute = computed(() => isUi5.value ? '/ui5' : '/fiori')
 const backLabel = computed(() => isUi5.value ? 'UI5 Explorer' : 'Fiori Explorer')
 
-// Resolve public base for GitHub Pages sub-path
 const svgBase = import.meta.env.BASE_URL
-
-const svg = ref('')
+const diagEl = ref(null)
 const loading = ref(true)
 const error = ref('')
 
 const ui5Diagram = `
-flowchart TD
-  subgraph DEV["🖥️ Claude / GitHub Copilot"]
-    CLAUDE["Natural Language Request"]
-  end
+flowchart LR
+  CLAUDE["Claude / Copilot"]
 
-  subgraph MCP["@ui5/mcp-server"]
+  subgraph MCP["@ui5/mcp-server  —  10 Tools"]
     direction TB
-
-    subgraph SC["📦 Scaffolding"]
+    subgraph SC["Scaffolding"]
       createApp["create_ui5_app"]
       createCard["create_integration_card"]
     end
-
-    subgraph DX["📚 Documentation & Guides"]
+    subgraph DX["Documentation"]
       apiRef["get_api_reference"]
       verInfo["get_version_info"]
       tsGuide["get_typescript_conversion_guidelines"]
       guidelines["get_guidelines"]
       cardGuide["get_integration_cards_guidelines"]
     end
-
-    subgraph AN["🔍 Analysis"]
+    subgraph AN["Analysis"]
       projInfo["get_project_info"]
     end
-
-    subgraph QA["✅ Quality"]
+    subgraph QA["Quality"]
       linter["run_ui5_linter"]
       manifest["run_manifest_validation"]
     end
   end
 
-  subgraph OUT["Outputs"]
-    FS["📁 Local File System"]
-    UI5DOCS["📖 UI5 API Docs / CDN"]
-  end
+  FS["Local File System"]
+  UI5DOCS["UI5 API Docs"]
 
-  CLAUDE -->|"MCP Protocol"| MCP
-  SC -->|"writes app files"| FS
-  AN -->|"reads project"| FS
-  QA -->|"reads & reports"| FS
-  DX -->|"fetches"| UI5DOCS
+  CLAUDE -->|MCP Protocol| MCP
+  SC -->|writes| FS
+  AN -->|reads| FS
+  QA -->|reads| FS
+  DX -->|fetches| UI5DOCS
 `
 
 onMounted(async () => {
   if (!isUi5.value) { loading.value = false; return }
+
+  await nextTick()
 
   try {
     mermaid.initialize({
@@ -142,21 +134,43 @@ onMounted(async () => {
       theme: 'base',
       themeVariables: {
         fontSize: '13px',
-        primaryColor: '#f5f4f1',
-        primaryTextColor: '#1e1d1a',
-        primaryBorderColor: '#e0deda',
-        lineColor: '#8a8780',
-        secondaryColor: '#eeedea',
-        tertiaryColor: '#faf9f7',
-        clusterBkg: '#faf9f7',
-        clusterBorder: '#e0deda',
+        primaryColor: '#b45309',
+        primaryTextColor: '#ffffff',
+        primaryBorderColor: '#92400e',
+        lineColor: '#0f4024',
+        secondaryColor: '#2563eb',
+        tertiaryColor: '#1e3a5f',
+        background: '#f8f9fc',
+        mainBkg: '#b45309',
+        nodeBorder: '#92400e',
+        clusterBkg: '#e8f0fe',
+        clusterBorder: '#2563eb',
+        titleColor: '#1e2a4a',
+        edgeLabelBackground: '#f0f4ff',
+        nodeTextColor: '#ffffff',
       },
-      flowchart: { padding: 12, nodeSpacing: 32, rankSpacing: 44, curve: 'basis' }
+      flowchart: { padding: 14, nodeSpacing: 36, rankSpacing: 50, curve: 'basis', useMaxWidth: true }
     })
 
-    const id = 'ui5-arch-diag'
-    const { svg: rendered } = await mermaid.render(id, ui5Diagram.trim())
-    svg.value = rendered
+    const { svg: rendered } = await mermaid.render('ui5-arch-diag', ui5Diagram.trim())
+
+    // Parse the SVG to extract viewBox dimensions for proper aspect ratio
+    const parser = new DOMParser()
+    const svgDoc = parser.parseFromString(rendered, 'image/svg+xml')
+    const svgEl = svgDoc.querySelector('svg')
+    const vb = svgEl?.getAttribute('viewBox')?.split(' ').map(Number) || [0, 0, 900, 400]
+    const aspect = vb[3] > 0 ? (vb[2] / vb[3]).toFixed(4) : 2.5
+
+    // Inject as img via blob URL for reliable cross-renderer display
+    const blob = new Blob([rendered], { type: 'image/svg+xml' })
+    const url = URL.createObjectURL(blob)
+    const img = document.createElement('img')
+    img.src = url
+    img.alt = 'UI5 MCP Server Architecture'
+    img.style.cssText = `width:100%;max-width:900px;height:auto;aspect-ratio:${aspect};display:block;`
+    img.onload = () => URL.revokeObjectURL(url)
+    diagEl.value.innerHTML = ''
+    diagEl.value.appendChild(img)
   } catch (e) {
     error.value = 'Failed to render diagram: ' + e.message
   } finally {
@@ -204,7 +218,7 @@ body { font-family: var(--font-body); background: var(--bg-2); color: var(--t-pr
 .arch-panel-file { font-family: var(--font-mono); font-size: 11px; color: var(--t-muted); }
 
 /* Render area */
-.arch-render-wrap { padding: 28px 24px; display: flex; justify-content: center; overflow-x: auto; }
+.arch-render-wrap { padding: 28px 24px; display: flex; justify-content: center; overflow-x: auto; background: #f8f9fc; border-radius: 0 0 0 0; }
 .arch-svg-img { max-width: 860px; width: 100%; height: auto; border-radius: 8px; }
 .arch-loading { color: var(--t-muted); font-size: 13px; padding: 48px; }
 .arch-error { color: #dc2626; font-size: 13px; padding: 48px; background: #fef2f2; border-radius: 8px; }
